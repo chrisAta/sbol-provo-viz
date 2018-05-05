@@ -1,0 +1,3 @@
+pip install rdflib
+pip install graphviz
+apt install graphviz
