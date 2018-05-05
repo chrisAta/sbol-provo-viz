@@ -11,17 +11,31 @@ cur_class = ''
 
 edges = []
 nodes = []
+node_names = []
 node_dict = {}
+
+activity_roles = {}
 
 shape_dict = {
 
-'Activity' : 'box',
-'Plan' : 'polygon',
-'Agent' : 'diamond',
-'Association' : 'pentagon',
-'Usage' : 'trapezium',
+    'Activity' : 'trapezium',
+    'Plan' : 'polygon',
+    'Agent' : 'diamond',
+    'Association' : 'pentagon',
+    'Usage' : 'box',
 
 }
+
+colour_dict = {
+
+    '//sbols.org/v2#design' : 'blue',
+    '//sbols.org/v2#build' : 'red',
+    '//sbols.org/v2#test' : 'orange',
+    '//sbols.org/v2#learn' : 'green'
+
+
+}
+
 
 
 for (s, p, o) in sorted(g):
@@ -53,14 +67,27 @@ for (s, p, o) in sorted(g):
             else:
                 temp_label = s
 
-            nodes += [s]
+            node_names += [s]
             node_dict[s] = s.split(':')[-1]
 
             if cur_class in shape_dict.keys():
-                dot.node(s.split(':')[-1], temp_label, shape = shape_dict[cur_class]) # Createt a new node in the Graphviz
+                if cur_class == 'Association' or cur_class == 'Usage':
+                    # dot.node(s.split(':')[-1], temp_label, shape = shape_dict[cur_class], fixedsize ='true' , fontsize = '10',  width = '0.5', height = '0.5') # Createt a new node in the Graphviz
+                    nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class], 'true' , '10',  '0.5', '0.5')]
+
+                else:
+                    # dot.node(s.split(':')[-1], temp_label, shape = shape_dict[cur_class]) # Createt a new node in the Graphviz
+                    nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
+
+                if cur_class == 'Usage':
+
+                    for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedUsage'), URIRef(s)):
+                        for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
+                            activity_roles[activity.split(':')[-1]] = role.split(':')[-1]
+
 
             else:
-                dot.node(s.split(':')[-1], temp_label) # Createt a new node in the Graphviz
+                dot.node(s.split(':')[-1], temp_label) # Create a new node in the Graphviz
 
 
     if p == 'http://www.w3.org/ns/prov#wasDerivedFrom':
@@ -87,16 +114,29 @@ for (s, p, o) in sorted(g):
     elif p == 'http://www.w3.org/ns/prov#hadPlan':
         edges += [(s, o, 'hadPlan')]
 
+for node in nodes:
+
+    if len(node) == 3:
+        if node[0] in activity_roles.keys():
+            dot.node(node[0], node[1], shape = node[2], color = colour_dict[activity_roles[node[0]]])
+
+        else:
+            dot.node(node[0], node[1], shape = node[2])
+
+    else:
+        dot.node(node[0],node[1], shape = node[2], fixedsize = node[3], fontsize = node[4], width = node[5], height = node[6])
+
+
 for edge in edges:
 
-    if edge[0] not in nodes:
+    if edge[0] not in node_names:
 
         print 'Added a new unknown node'
 
         dot.node(edge[0].split(':')[-1], '/'.join(edge[0].split('/')[-2:]))
         node_dict[edge[0]] = edge[0].split(':')[-1]
 
-    if edge[1] not in nodes:
+    if edge[1] not in node_names:
 
         print 'Added a new unknown node'
 
