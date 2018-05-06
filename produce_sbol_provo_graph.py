@@ -21,10 +21,13 @@ activity_asc_roles = {} # Dict that links an activity to its role for colouring
 activity_usg_roles = {}
 activity_entity = {} # Dict that links an activity to its role for colouring
 
+activity_agent = {}
+activity_plan = {}
+
 
 shape_dict = { # Shape Dict
 
-    'Activity' : 'trapezium',
+    'Activity' : 'hexagon',
     'Plan' : 'polygon',
     'Agent' : 'diamond',
     'Association' : 'pentagon',
@@ -76,12 +79,9 @@ for (s, p, o) in sorted(g):
 
             if cur_class in shape_dict.keys():
 
-                if cur_class == 'Association':
-                    nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class], 'true' , '10',  '0.5', '0.5')] # Make Usages and Associations smaller
 
-                else:
-                    if cur_class != 'Usage':
-                        nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
+                if cur_class != 'Usage' and cur_class != 'Association':
+                    nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
 
 
                 if cur_class == 'Association':
@@ -89,6 +89,12 @@ for (s, p, o) in sorted(g):
                     for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedAssociation'), URIRef(s)): # Get the role of the activity a Usage is linked to
                         for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
                             activity_asc_roles[activity.split(':')[-1]] = role.split(':')[-1]
+
+                        for agent in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#agent')):
+                            activity_agent[activity.split(':')[-1]] = agent.split(':')[-1]
+
+                        for plan in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadPlan')):
+                            activity_plan[activity.split(':')[-1]] = plan.split(':')[-1]
 
 
                 elif cur_class == 'Usage':
@@ -98,7 +104,7 @@ for (s, p, o) in sorted(g):
                             activity_entity[activity.split(':')[-1]] = entity.split(':')[-1]
 
                         for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
-                            activity_usg_roles[activity.split(':')[-1]] = role.split(':')[-1]
+                            activity_usg_roles[activity.split(':')[-1]] = 'role_' + role.split('#')[-1]
 
 
             else:
@@ -115,9 +121,9 @@ for (s, p, o) in sorted(g):
 
     # elif p == 'http://www.w3.org/ns/prov#qualifiedUsage':
     #     edges += [(s, o, 'qualifiedUsage')]
-
-    elif p == 'http://www.w3.org/ns/prov#qualifiedAssociation':
-        edges += [(s, o, 'qualifiedAssociation')]
+    #
+    # elif p == 'http://www.w3.org/ns/prov#qualifiedAssociation':
+    #     edges += [(s, o, 'qualifiedAssociation')]
 
     # elif p == 'http://www.w3.org/ns/prov#entity':
     #     edges += [(s, o, 'entity')]
@@ -125,14 +131,20 @@ for (s, p, o) in sorted(g):
     # elif p == 'http://www.w3.org/ns/prov#hadRole':
     #     edges += [(s, o, 'hadRole')]
 
-    elif p == 'http://www.w3.org/ns/prov#agent':
-        edges += [(s, o, 'agent')]
-
-    elif p == 'http://www.w3.org/ns/prov#hadPlan':
-        edges += [(s, o, 'hadPlan')]
+    # elif p == 'http://www.w3.org/ns/prov#agent':
+    #     edges += [(s, o, 'agent')]
+    #
+    # elif p == 'http://www.w3.org/ns/prov#hadPlan':
+    #     edges += [(s, o, 'hadPlan')]
 
 for activity in activity_usg_roles.keys():
     edges += [(activity, activity_entity[activity], activity_usg_roles[activity])]
+
+for activity in activity_agent.keys():
+    edges += [(activity, activity_agent[activity], 'agent')]
+
+for activity in activity_plan.keys():
+    edges += [(activity, activity_plan[activity], 'plan')]
 
 for node in nodes: # Create the nodes
 
