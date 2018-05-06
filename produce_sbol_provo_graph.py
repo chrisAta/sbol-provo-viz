@@ -17,12 +17,12 @@ nodes = [] # All the nodes that get created
 node_names = [] # The names of all the nods that get created
 node_dict = {} # Dict that stores the parameters needed for the creation of a specific node
 
-activity_asc_roles = {} # Dict that links an activity to its role for colouring
-activity_usg_roles = {}
-activity_entity = {} # Dict that links an activity to its role for colouring
+activity_asc_roles = {} # Dict that links an activity to its association's role
+activity_usg_roles = {} # Dict that links an activity to its usage's role
+activity_entity = {} # Dict that links an activity to its usage's entity
 
-activity_agent = {}
-activity_plan = {}
+activity_agent = {} # Dict that links an activity to its association's agent
+activity_plan = {} # Dict that links an activity to its association's plan
 
 
 shape_dict = { # Shape Dict
@@ -62,13 +62,12 @@ for (s, p, o) in sorted(g):
 
             cur_class = value.split('#')[-1] # Track the current class
 
-            print 'Creating a ' + cur_class + ' node.'
-
             # Different labels depending on the class
             if cur_class == 'Agent' or cur_class =='Plan':
+
                 temp_label = s.split('/')[-1]
 
-            elif cur_class == 'Implementation' or cur_class == 'Activity' or cur_class == 'Association' or cur_class == 'Usage' or cur_class == 'Test':
+            elif cur_class == 'Implementation' or cur_class == 'Test' or cur_class == 'Model' or cur_class == 'Activity':
                 temp_label = '/'.join(s.split('/')[-2:])
 
             else:
@@ -79,27 +78,31 @@ for (s, p, o) in sorted(g):
 
             if cur_class in shape_dict.keys():
 
+                if cur_class == 'Agent' or cur_class == 'Plan':
+                    nodes += [(s.split('/')[-1], temp_label, shape_dict[cur_class])]
 
-                if cur_class != 'Usage' and cur_class != 'Association':
+                elif cur_class != 'Usage' and cur_class != 'Association':
                     nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
 
 
                 if cur_class == 'Association':
 
                     for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedAssociation'), URIRef(s)): # Get the role of the activity a Usage is linked to
+
                         for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
                             activity_asc_roles[activity.split(':')[-1]] = role.split(':')[-1]
 
                         for agent in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#agent')):
-                            activity_agent[activity.split(':')[-1]] = agent.split(':')[-1]
+                            activity_agent[activity.split(':')[-1]] = agent.split('/')[-1]
 
                         for plan in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadPlan')):
-                            activity_plan[activity.split(':')[-1]] = plan.split(':')[-1]
+                            activity_plan[activity.split(':')[-1]] = plan.split('/')[-1]
 
 
                 elif cur_class == 'Usage':
 
                     for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedUsage'), URIRef(s)):
+
                         for entity in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#entity')):
                             activity_entity[activity.split(':')[-1]] = entity.split(':')[-1]
 
@@ -111,70 +114,42 @@ for (s, p, o) in sorted(g):
                 dot.node(s.split(':')[-1], temp_label)
 
 
-    # All these if-statements store the PROVO edges
-
     if p == 'http://www.w3.org/ns/prov#wasDerivedFrom':
         edges += [(s, o, 'wasDerivedFrom')]
 
     elif p == 'http://www.w3.org/ns/prov#wasGeneratedBy':
         edges += [(s, o, 'wasGeneratedBy')]
 
-    # elif p == 'http://www.w3.org/ns/prov#qualifiedUsage':
-    #     edges += [(s, o, 'qualifiedUsage')]
-    #
-    # elif p == 'http://www.w3.org/ns/prov#qualifiedAssociation':
-    #     edges += [(s, o, 'qualifiedAssociation')]
 
-    # elif p == 'http://www.w3.org/ns/prov#entity':
-    #     edges += [(s, o, 'entity')]
-
-    # elif p == 'http://www.w3.org/ns/prov#hadRole':
-    #     edges += [(s, o, 'hadRole')]
-
-    # elif p == 'http://www.w3.org/ns/prov#agent':
-    #     edges += [(s, o, 'agent')]
-    #
-    # elif p == 'http://www.w3.org/ns/prov#hadPlan':
-    #     edges += [(s, o, 'hadPlan')]
-
-for activity in activity_usg_roles.keys():
+for activity in activity_usg_roles.keys(): # Create edges from activity to its usage's entity
     edges += [(activity, activity_entity[activity], activity_usg_roles[activity])]
 
-for activity in activity_agent.keys():
+for activity in activity_agent.keys(): # Create edges from activity to its association's agent
     edges += [(activity, activity_agent[activity], 'agent')]
 
-for activity in activity_plan.keys():
+for activity in activity_plan.keys(): # Create edges from activity to its association's plan
     edges += [(activity, activity_plan[activity], 'plan')]
 
 for node in nodes: # Create the nodes
 
-    if len(node) == 3:
-        if node[0] in activity_asc_roles.keys():
-            dot.node(node[0], node[1], shape = node[2], style='filled', fillcolor = colour_dict[activity_asc_roles[node[0]]])
-
-        else:
-            dot.node(node[0], node[1], shape = node[2])
+    if node[0] in activity_asc_roles.keys(): # If it's an Activity, colour it based on its Association's role
+        dot.node(node[0], node[1], shape = node[2], style='filled', fillcolor = colour_dict[activity_asc_roles[node[0]]])
 
     else:
-        dot.node(node[0],node[1], shape = node[2], fixedsize = node[3], fontsize = node[4], width = node[5], height = node[6])
+        dot.node(node[0], node[1], shape = node[2])
 
 
 for edge in edges: # Create the edges
 
     if edge[0] not in node_names:
 
-        print 'Added a new unknown node'
-
         dot.node(edge[0].split(':')[-1], '/'.join(edge[0].split('/')[-2:]))
         node_dict[edge[0]] = edge[0].split(':')[-1]
 
     if edge[1] not in node_names:
 
-        print 'Added a new unknown node'
-
         node_dict[edge[1]] = edge[1].split(':')[-1]
         dot.node(edge[1].split(':')[-1], '/'.join(edge[1].split('/')[-2:]))
-
 
     dot.edge(node_dict[edge[0]], node_dict[edge[1]], str(edge[2]))
 
