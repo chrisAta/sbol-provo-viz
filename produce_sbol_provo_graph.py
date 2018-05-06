@@ -17,8 +17,10 @@ nodes = [] # All the nodes that get created
 node_names = [] # The names of all the nods that get created
 node_dict = {} # Dict that stores the parameters needed for the creation of a specific node
 
-activity_roles = {} # Dict that links an activity to its role for colouring
+activity_asc_roles = {} # Dict that links an activity to its role for colouring
+activity_usg_roles = {}
 activity_entity = {} # Dict that links an activity to its role for colouring
+
 
 shape_dict = { # Shape Dict
 
@@ -86,15 +88,17 @@ for (s, p, o) in sorted(g):
 
                     for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedAssociation'), URIRef(s)): # Get the role of the activity a Usage is linked to
                         for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
-                            activity_roles[activity.split(':')[-1]] = role.split(':')[-1]
+                            activity_asc_roles[activity.split(':')[-1]] = role.split(':')[-1]
 
 
                 elif cur_class == 'Usage':
 
                     for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedUsage'), URIRef(s)):
                         for entity in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#entity')):
-                            print entity
                             activity_entity[activity.split(':')[-1]] = entity.split(':')[-1]
+
+                        for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
+                            activity_usg_roles[activity.split(':')[-1]] = role.split(':')[-1]
 
 
             else:
@@ -127,14 +131,14 @@ for (s, p, o) in sorted(g):
     elif p == 'http://www.w3.org/ns/prov#hadPlan':
         edges += [(s, o, 'hadPlan')]
 
-for activity in activity_roles.keys():
-    edges += [(activity, activity_entity[activity], activity_roles[activity])]
+for activity in activity_usg_roles.keys():
+    edges += [(activity, activity_entity[activity], activity_usg_roles[activity])]
 
 for node in nodes: # Create the nodes
 
     if len(node) == 3:
-        if node[0] in activity_roles.keys():
-            dot.node(node[0], node[1], shape = node[2], style='filled', fillcolor = colour_dict[activity_roles[node[0]]])
+        if node[0] in activity_asc_roles.keys():
+            dot.node(node[0], node[1], shape = node[2], style='filled', fillcolor = colour_dict[activity_asc_roles[node[0]]])
 
         else:
             dot.node(node[0], node[1], shape = node[2])
