@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:prov="http://www.w3.org/ns/prov#" xmlns:sbol="http://sbols.org/v2#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#dateTime/" xmlns:ns0="http://wiki.synbiohub.org/wiki/Terms/synbiohub#">
+  <sbol:ComponentDefinition rdf:about="http://localhost:7777/user/ChrisA/TestImp5/BBa_I12210/1">
+    <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/TestImp5/BBa_I12210"/>
+    <sbol:displayId>BBa_I12210</sbol:displayId>
+    <sbol:version>1</sbol:version>
+    <dcterms:description>Testing</dcterms:description>
+    <ns0:physicalLocation>Fridge A,Tray 2</ns0:physicalLocation>
+    <ns0:ownedBy>http://localhost:7777/user/ChrisA</ns0:ownedBy>
+    <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA/TestImp5/BBa_I12210/1"/>
+  </sbol:ComponentDefinition>
   <sbol:Implementation rdf:about="http://localhost:7777/user/ChrisA/TestImp5/TestImp1001/1">
     <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/TestImp5/TestImp1001"/>
     <sbol:displayId>TestImp1001</sbol:displayId>

@@ -31,7 +31,7 @@ shape_dict = { # Shape Dict
     'Plan' : 'polygon',
     'Agent' : 'diamond',
     'Association' : 'pentagon',
-    'Usage' : 'box',
+    'Usage' : 'box'
 
 }
 
@@ -40,7 +40,12 @@ colour_dict = { # Colour Dict
     '//sbols.org/v2#design' : 'blue',
     '//sbols.org/v2#build' : 'red',
     '//sbols.org/v2#test' : 'orange',
-    '//sbols.org/v2#learn' : 'green'
+    '//sbols.org/v2#learn' : 'green',
+    'ComponentDefinition': 'darkseagreen',
+    'ModuleDefinition': 'darkseagreen',
+    'Implementation': 'darkseagreen1',
+    'Test': 'darkseagreen2',
+    'Model': 'darkseagreen3'
 
 }
 
@@ -76,14 +81,17 @@ for (s, p, o) in sorted(g):
             node_names += [s]
             node_dict[s] = s.split(':')[-1]
 
-            if cur_class in shape_dict.keys():
+            if cur_class in shape_dict.keys() or cur_class in colour_dict:
 
                 if cur_class == 'Agent' or cur_class == 'Plan':
                     nodes += [(s.split('/')[-1], temp_label, shape_dict[cur_class])]
 
+                elif cur_class == 'ComponentDefinition' or cur_class == 'ModuleDefinition' or cur_class == 'Implementation' or cur_class == 'Test' or cur_class == 'Model':
+                    print 'HIHIHIHI'
+                    nodes += [(s.split(':')[-1], temp_label, colour_dict[cur_class], 'entity')]
+
                 elif cur_class != 'Usage' and cur_class != 'Association':
                     nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
-
 
                 if cur_class == 'Association':
 
@@ -134,6 +142,10 @@ for node in nodes: # Create the nodes
 
     if node[0] in activity_asc_roles.keys(): # If it's an Activity, colour it based on its Association's role
         dot.node(node[0], node[1], shape = node[2], style='filled', fillcolor = colour_dict[activity_asc_roles[node[0]]])
+
+    elif len(node) == 4:
+        print 'hiiii'
+        dot.node(node[0], node[1], style='filled', fillcolor = node[2])
 
     else:
         dot.node(node[0], node[1], shape = node[2])
