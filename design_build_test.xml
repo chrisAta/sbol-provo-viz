@@ -63,7 +63,7 @@
         <sbol:displayId>TestImp1001_association</sbol:displayId>
         <sbol:version>1</sbol:version>
         <prov:agent rdf:resource="http://localhost:7777/user/ChrisA"/>
-        <prov:hadPlan rdf:resource="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol"/>
+        <prov:hadPlan rdf:resource="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol/1"/>
         <prov:hadRole rdf:resource="http://sbols.org/v2#build"/>
       </prov:Association>
     </prov:qualifiedAssociation>
@@ -74,11 +74,11 @@
     <dcterms:title>Christian Atallah</dcterms:title>
     <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA"/>
   </prov:Agent>
-  <prov:Plan rdf:about="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol">
+  <prov:Plan rdf:about="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol/1">
     <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol"/>
     <sbol:displayId>NewRNAProtocol</sbol:displayId>
     <dcterms:title>NewRNAProtocol</dcterms:title>
-    <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol"/>
+    <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA/Test1/NewRNAProtocol/1"/>
   </prov:Plan>
   <prov:Activity rdf:about="http://localhost:7777/user/ChrisA/TestImp5/TestTest1001_activity/1">
     <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/TestImp5/TestTest1001_activity"/>
@@ -100,7 +100,7 @@
         <sbol:displayId>TestTest1001_association</sbol:displayId>
         <sbol:version>1</sbol:version>
         <prov:agent rdf:resource="http://localhost:7777/user/ChrisA"/>
-        <prov:hadPlan rdf:resource="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol"/>
+        <prov:hadPlan rdf:resource="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol/1"/>
         <prov:hadRole rdf:resource="http://sbols.org/v2#test"/>
       </prov:Association>
     </prov:qualifiedAssociation>
@@ -111,8 +111,8 @@
     <dcterms:title>Christian Atallah</dcterms:title>
     <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA"/>
   </prov:Agent>
-  <prov:Plan rdf:about="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol">
-    <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol"/>
+  <prov:Plan rdf:about="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol/1">
+    <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol/1"/>
     <sbol:displayId>MutagenesisProtocol</sbol:displayId>
     <dcterms:title>MutagenesisProtocol</dcterms:title>
     <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA/Test1/MutagenesisProtocol"/>
@@ -137,7 +137,7 @@
         <sbol:displayId>TestLearn1001_association</sbol:displayId>
         <sbol:version>1</sbol:version>
         <prov:agent rdf:resource="http://localhost:7777/user/ChrisA"/>
-        <prov:hadPlan rdf:resource="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol"/>
+        <prov:hadPlan rdf:resource="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol/1"/>
         <prov:hadRole rdf:resource="http://sbols.org/v2#learn"/>
       </prov:Association>
     </prov:qualifiedAssociation>
@@ -148,8 +148,8 @@
     <dcterms:title>Christian Atallah</dcterms:title>
     <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA"/>
   </prov:Agent>
-  <prov:Plan rdf:about="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol">
-    <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol"/>
+  <prov:Plan rdf:about="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol/1">
+    <sbol:persistentIdentity rdf:resource="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol/1"/>
     <sbol:displayId>DataAnalysisProtocol</sbol:displayId>
     <dcterms:title>DataAnalysisProtocol</dcterms:title>
     <ns0:topLevel rdf:resource="http://localhost:7777/user/ChrisA/Test1/DataAnalysisProtocol"/>
