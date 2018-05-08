@@ -6,8 +6,8 @@ from graphviz import Digraph
 
 g = Graph()
 # g.parse('./design_build_test.xml', 'rdfxml')
-# g.parse('./full_life_cycle.xml', 'rdfxml')
-g.parse('./sbol2.xml', 'rdfxml')
+g.parse('./full_life_cycle.xml', 'rdfxml')
+# g.parse('./sbol2.xml', 'rdfxml')
 
 dot = Digraph('design_build_test')
 
@@ -59,8 +59,6 @@ for (s, p, o) in sorted(g):
     p = p.strip()
     o = o.strip()
 
-    # print '%s %s %s' % (s, p ,o)
-
     # If new subject
     if (cur_sub != s):
 
@@ -75,13 +73,13 @@ for (s, p, o) in sorted(g):
 
                 temp_label = s.split('/')[-1]
 
-            elif cur_class == 'Implementation' or cur_class == 'ComponentDefinition' or cur_class == 'ModuleDefinition' or cur_class == 'Test' or cur_class == 'Model' or cur_class == 'Activity' or cur_class =='Plan':
+
+            elif cur_class in ('ComponentDefinition', 'ModuleDefinition' , 'Implementation', 'Test', 'Model', 'Activity', 'Plan'):
 
                 for displayId in g.objects(URIRef(s), URIRef('http://sbols.org/v2#displayId')):
                     temp_label =  displayId
 
             node_names += [s]
-
             node_dict[s] = s.split(':')[-1]
 
             if cur_class in shape_dict.keys() or cur_class in colour_dict:
@@ -92,11 +90,13 @@ for (s, p, o) in sorted(g):
                 elif cur_class == 'Plan':
                     nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
 
-                elif cur_class == 'ComponentDefinition' or cur_class == 'ModuleDefinition' or cur_class == 'Implementation' or cur_class == 'Test' or cur_class == 'Model':
+
+
+                elif cur_class in ('ComponentDefinition', 'ModuleDefinition' , 'Implementation', 'Test', 'Model'):
                     nodes += [(s.split(':')[-1], temp_label, colour_dict[cur_class], 'entity')]
 
-                elif cur_class != 'Usage' and cur_class != 'Association' and cur_class != 'Attachment':
-                    # print temp_label
+
+                elif cur_class != 'Usage' and cur_class not in ('Association', 'Attachment'):
                     nodes += [(s.split(':')[-1], temp_label, shape_dict[cur_class])]
 
                 if cur_class == 'Association':
@@ -151,7 +151,7 @@ for (s, p, o) in sorted(g):
         edges += [(s.split(':')[-1], o.split(':')[-1], 'wasGeneratedBy')]
 
 
-for activity in activity_usg_roles.keys(): # Create edges from activity to its usage's entity
+for activity in activity_usg_roles.keys(): # Create edges from activity to all of its usages' entities
 
     for i in range(0, len(activity_entity[activity])):
         edges += [(activity, activity_entity[activity][i], activity_usg_roles[activity][i])]
@@ -163,16 +163,12 @@ for activity in activity_plan.keys(): # Create edges from activity to its associ
     edges += [(activity, activity_plan[activity], 'plan')]
 
 
-
-
-print nodes
-
 for node in nodes: # Create the nodes
 
     if node[0] in activity_asc_roles.keys(): # If it's an Activity, colour it based on its Association's role
         dot.node(node[0], node[1], shape = node[2], style='filled', fillcolor = colour_dict[activity_asc_roles[node[0]]])
 
-    elif len(node) == 4:
+    elif len(node) == 4: # If it's one of the entities, colour it based on its Usage's Role
         dot.node(node[0], node[1], style='filled', fillcolor = node[2])
 
     else:
@@ -181,21 +177,19 @@ for node in nodes: # Create the nodes
 for edge in edges: # Create the edges
 
     if edge[0] not in node_names:
-        print edge[0]
+
         node_names += [edge[0]]
         dot.node(edge[0].split(':')[-1], '/'.join(edge[0].split('/')[-2:]))
         node_dict[edge[0]] = edge[0].split(':')[-1]
 
     if edge[1] not in node_names:
-        print edge[1]
+
         node_names += [edge[1]]
         node_dict[edge[1]] = edge[1].split(':')[-1]
         dot.node(edge[1].split(':')[-1], '/'.join(edge[1].split('/')[-2:]))
 
     dot.edge(node_dict[edge[0]], node_dict[edge[1]], str(edge[2]))
 
-print dot.source
-
 # dot.render('design_build_test', view=True) # Create the graph image
-# dot.render('full_life_cycle', view=True) # Create the graph image
-dot.render('sbol2', view=True) # Create the graph image
+dot.render('full_life_cycle', view=True) # Create the graph image
+# dot.render('sbol2', view=True) # Create the graph image
