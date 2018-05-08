@@ -34,6 +34,14 @@
     <sbol:persistentIdentity rdf:resource="http://sbolstandard.org/build/amplify_dna_construct_with_five_primer_and_three_primer"/>
     <sbol:displayId>amplify_dna_construct_with_five_primer_and_three_primer</sbol:displayId>
     <dcterms:title>amplify(dna_construct, five_primer, three_primer)</dcterms:title>
+    <prov:qualifiedAssociation>
+      <prov:Association rdf:about="http://sys-bio.org/Activity/build_generation/build_generation_association/1.0.0">
+        <sbol:displayId>build_generation_association</sbol:displayId>
+        <sbol:persistentIdentity rdf:resource="http://sys-bio.org/Activity/build_generation/build_generation_association"/>
+        <sbol:version>1.0.0</sbol:version>
+        <prov:hadRole rdf:resource="http://sbols.org/v2#build"/>
+      </prov:Association>
+    </prov:qualifiedAssociation>
     <prov:qualifiedUsage>
       <prov:Usage rdf:about="http://sbolstandard.org/build/amplify_dna_construct_with_five_primer_and_three_primer/reverse_primer/1.0.0">
         <sbol:persistentIdentity rdf:resource="http://sbolstandard.org/build/amplify_dna_construct_with_five_primer_and_three_primer/reverse_primer"/>

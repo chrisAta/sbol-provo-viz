@@ -6,8 +6,8 @@ from graphviz import Digraph
 
 g = Graph()
 # g.parse('./design_build_test.xml', 'rdfxml')
-g.parse('./full_life_cycle.xml', 'rdfxml')
-# g.parse('./sbol2.xml', 'rdfxml')
+# g.parse('./full_life_cycle.xml', 'rdfxml')
+g.parse('./sbol2.xml', 'rdfxml')
 
 dot = Digraph('design_build_test')
 
@@ -30,8 +30,8 @@ activity_plan = {} # Dict that links an activity to its association's plan
 shape_dict = { # Shape Dict
 
     'Activity' : 'hexagon',
-    'Plan' : 'polygon',
-    'Agent' : 'diamond',
+    'Plan' : 'box',
+    'Agent' : 'box',
     'Association' : 'pentagon',
     'Usage' : 'box'
 
@@ -39,16 +39,16 @@ shape_dict = { # Shape Dict
 
 colour_dict = { # Colour Dict
 
-    '//sbols.org/v2#design' : 'blue',
-    '//sbols.org/v2#build' : 'red',
+    '//sbols.org/v2#design' : 'mediumpurple1',
+    '//sbols.org/v2#build' : 'orangered',
     '//sbols.org/v2#test' : 'orange',
-    '//sbols.org/v2#learn' : 'green',
-    'ComponentDefinition': 'darkseagreen',
-    'ModuleDefinition': 'darkseagreen',
-    'Implementation': 'darkseagreen1',
-    'Test': 'darkseagreen2',
-    'Attachment': 'darkseagreen2',
-    'Model': 'darkseagreen3'
+    '//sbols.org/v2#learn' : 'peachpuff',
+    'ComponentDefinition': 'lawngreen',
+    'ModuleDefinition': 'lawngreen',
+    'Implementation': 'mediumturquoise',
+    'Test': 'skyblue1',
+    'Attachment': 'skyblue3',
+    'Model': 'cornflowerblue'
 
 }
 
@@ -197,5 +197,5 @@ for edge in edges: # Create the edges
 print dot.source
 
 # dot.render('design_build_test', view=True) # Create the graph image
-dot.render('full_life_cycle', view=True) # Create the graph image
-# dot.render('sbol2', view=True) # Create the graph image
+# dot.render('full_life_cycle', view=True) # Create the graph image
+dot.render('sbol2', view=True) # Create the graph image
