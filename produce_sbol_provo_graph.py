@@ -101,8 +101,8 @@ for (s, p, o) in sorted(g):
 
                 if cur_class == 'Association':
 
-                    for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedAssociation'), URIRef(s)): # Get the role of the activity a Usage is linked to
-
+                    for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedAssociation'), URIRef(s)): # Get the role of the Association an activity is linked to
+                                                                                                                    # Also get the activity's Agent and Plan
                         for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
                             activity_asc_roles[activity.split(':')[-1]] = role.split(':')[-1]
 
@@ -117,7 +117,7 @@ for (s, p, o) in sorted(g):
 
                     for activity in g.subjects(URIRef('http://www.w3.org/ns/prov#qualifiedUsage'), URIRef(s)):
 
-                        for entity in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#entity')):
+                        for entity in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#entity')): # Get the entity for all an Activity's Usages
 
                             if activity.split(':')[-1] in activity_entity.keys():
                                 activity_entity[activity.split(':')[-1]] += [entity.split(':')[-1]]
@@ -126,7 +126,7 @@ for (s, p, o) in sorted(g):
 
                                 activity_entity[activity.split(':')[-1]] = [entity.split(':')[-1]]
 
-                        for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
+                        for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')): # Get the role for all an Activity's Usages
 
                             if activity.split(':')[-1] in activity_usg_roles.keys():
                                 activity_usg_roles[activity.split(':')[-1]] += ['used_' + role.split('/')[-1].split('#')[-1]]
@@ -136,18 +136,18 @@ for (s, p, o) in sorted(g):
 
 
 
-    if p == 'http://www.w3.org/ns/prov#wasDerivedFrom':
+    if p == 'http://www.w3.org/ns/prov#wasDerivedFrom': # Add the wasDerivedFrom edges
 
         for value in g.objects(URIRef(o), URIRef('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')):
 
             cur_class = value.split('#')[-1]
 
-            if cur_class == 'Attachment':
+            if cur_class == 'Attachment': # Only create a node for an Attachment if it's pointed to as a Usage's entity
                 nodes += [(o.split(':')[-1], o.split('/')[-2], colour_dict[cur_class], 'entity')]
 
         edges += [(s.split(':')[-1], o.split(':')[-1], 'wasDerivedFrom')]
 
-    elif p == 'http://www.w3.org/ns/prov#wasGeneratedBy':
+    elif p == 'http://www.w3.org/ns/prov#wasGeneratedBy': # Add the wasGeneratedBy edges
         edges += [(s.split(':')[-1], o.split(':')[-1], 'wasGeneratedBy')]
 
 
