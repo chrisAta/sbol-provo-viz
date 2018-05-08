@@ -129,10 +129,10 @@ for (s, p, o) in sorted(g):
                         for role in g.objects(URIRef(s), URIRef('http://www.w3.org/ns/prov#hadRole')):
 
                             if activity.split(':')[-1] in activity_usg_roles.keys():
-                                activity_usg_roles[activity.split(':')[-1]] += ['role_' + role.split('/')[-1].split('#')[-1]]
+                                activity_usg_roles[activity.split(':')[-1]] += ['used_' + role.split('/')[-1].split('#')[-1]]
 
                             else:
-                                activity_usg_roles[activity.split(':')[-1]] = ['role_' + role.split('/')[-1].split('#')[-1]]
+                                activity_usg_roles[activity.split(':')[-1]] = ['used_' + role.split('/')[-1].split('#')[-1]]
 
 
 
@@ -179,16 +179,18 @@ for edge in edges: # Create the edges
     if edge[0] not in node_names:
 
         node_names += [edge[0]]
-        dot.node(edge[0].split(':')[-1], '/'.join(edge[0].split('/')[-2:]))
+        dot.node(edge[0].split(':')[-1], edge[0].split('/')[-2:][0])
         node_dict[edge[0]] = edge[0].split(':')[-1]
 
     if edge[1] not in node_names:
 
         node_names += [edge[1]]
         node_dict[edge[1]] = edge[1].split(':')[-1]
-        dot.node(edge[1].split(':')[-1], '/'.join(edge[1].split('/')[-2:]))
+        dot.node(edge[1].split(':')[-1], edge[1].split('/')[-2:][0])
 
     dot.edge(node_dict[edge[0]], node_dict[edge[1]], str(edge[2]))
+
+
 
 # dot.render('design_build_test', view=True) # Create the graph image
 dot.render('full_life_cycle', view=True) # Create the graph image
