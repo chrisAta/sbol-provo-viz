@@ -1,15 +1,27 @@
 # This script parses an SBOL file and produces a Provenance Graph for it using Graphviz
-# This is specifically for the PROV-O model
+# This is specifically for the PROV-O model that SBOL uses
+# USAGE: Simply pass an SBOL file as an argument when running this script
 
 from rdflib import Graph, URIRef
 from graphviz import Digraph
+from sys import argv
+from os import path
+
+if len(argv) != 2:
+    print 'ERROR: Please enter a file as argument.'
+    exit(1)
+
+file = argv[1]
+file_root = ''.join(file.split('.')[0:-1])
+
+if not path.isfile(file):
+    print 'ERROR: File not found.'
+    exit(1)
 
 g = Graph()
-# g.parse('./design_build_test.xml', 'rdfxml')
-g.parse('./full_life_cycle.xml', 'rdfxml')
-# g.parse('./sbol2.xml', 'rdfxml')
+g.parse(file, 'rdfxml')
 
-dot = Digraph('design_build_test')
+dot = Digraph('digraph')
 
 cur_sub = ''
 cur_class = ''
@@ -191,7 +203,4 @@ for edge in edges: # Create the edges
     dot.edge(node_dict[edge[0]], node_dict[edge[1]], str(edge[2]))
 
 
-
-# dot.render('design_build_test', view=True) # Create the graph image
-dot.render('full_life_cycle', view=True) # Create the graph image
-# dot.render('sbol2', view=True) # Create the graph image
+dot.render(file_root, view=True) # Create the graph image
