@@ -5,3 +5,5 @@ Dependencies:
 * pip install rdflib
 * pip install graphviz
 * apt install graphviz
+
+USAGE: Simply pass an SBOL file as an argument when running this script
